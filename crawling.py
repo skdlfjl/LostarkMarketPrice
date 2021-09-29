@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 import re
+import requests
 
 #chrome_options = Options()
 #chrome_options.add_argument('--headlss')  # headless는 직접 크롬창에서 셀레니움이 어떻게 작동되는지 굳이 창을 열지 않고 싶을 때 이용.
@@ -24,14 +25,24 @@ def get_crawl(URL):
     return crawl_data
 
 driver.implicitly_wait(3)
-driver.get('https://member.onstove.com/auth/login?redirect_url=https%3A%2F%2Flostark.game.onstove.com%2FMain')
+login_url = 'https://member.onstove.com/auth/login?redirect_url=https%3A%2F%2Flostark.game.onstove.com%2FMain'
+driver.get(login_url)
 login_x_path = '//*[@id="idLogin"]/div[3]/button'
 driver.find_element_by_name('user_id').send_keys('okc951108')
 driver.find_element_by_name('user_pwd').send_keys('wlgml1489')
 driver.find_element_by_xpath(login_x_path).click()
 driver.find_element_by_xpath('/html/body/div[1]/section[1]/div/div/section/article[2]/nav/a[2]').click()   # 비밀번호를 다음에 변경하기
 
-# 여기까지 하면 로그인하여 로스트아크 공식 홈페이지에 들어가집니다
-# 추가적으로 필요한 기능? : 아이디를 직접 입력할 수 있는 기능
+auction_url = "https://lostark.game.onstove.com/Auction"
+driver.get(auction_url)
 
+# 여기까지 하면 로그인하여 로스트아크 경매장 홈페이지에 들어가집니다
 
+# 목걸이
+search_x_path = '//*[@id="btnSearch"]'
+driver.find_element_by_id('txtItemName').send_keys('목걸이')
+driver.find_element_by_xpath(search_x_path).click()
+
+# 귀걸이
+
+# 반지
