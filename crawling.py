@@ -2,6 +2,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.select import Select
 import time
 import re
 import requests
@@ -38,10 +39,30 @@ driver.get(auction_url)
 
 # 여기까지 하면 로그인하여 로스트아크 경매장 홈페이지에 들어가집니다
 
+
 # 목걸이
 search_x_path = '//*[@id="btnSearch"]'
 driver.find_element_by_id('txtItemName').send_keys('목걸이')
-driver.find_element_by_xpath(search_x_path).click()
+driver.find_element_by_css_selector("#selItemGrade").click()
+driver.find_element_by_css_selector("#selItemGrade > div.lui-select__option > label:nth-child(8)").click()  
+# label:nth-child(2) : 일반
+# label:nth-child(3) : 고급
+# label:nth-child(4) : 희귀
+# label:nth-child(5) : 영웅
+# label:nth-child(6) : 전설
+# label:nth-child(7) : 유물
+# label:nth-child(8) : 고대
+# label:nth-child(9) : 에스더
+driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭
+
+'''html = driver.page_source  # 웹 페이지의 html 저장
+soup = BeautifulSoup(html, 'html.parser')
+#auction_list = soup.select('#auctionListTbody')  # '#아이디이름'
+auction_list = soup.select('.td') 
+
+#print(soup)
+print(auction_list)'''
+
 
 # 귀걸이
 
