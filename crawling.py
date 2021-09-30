@@ -58,20 +58,17 @@ driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭
 
 
 ### 페이지 넘기기 ###
-time.sleep(2)   # element is not attached to the page document 에러 해결
-driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[3]').click() # 2
 
-time.sleep(2)   
-driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[11]').click() # 10
+while True:
+    x_index = 3
+    while x_index < 13:
+        time.sleep(1.5)   # element is not attached to the page document 에러 해결
+        driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{x_index}]').click()
+    
+        # 해당 페이지 크롤링 코드 추가해야됨
 
-time.sleep(2)   
-driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[12]').click() # > (11)
-
-time.sleep(2)   
-driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[3]').click() # 12 (13을 넣으면 >>가 눌린다)
-
-# 즉, 3~12까지의 숫자가 반복되어야 함 (for문을 사용하도록 한다)
-
+        x_index += 1
+    
 
 
 
