@@ -55,13 +55,26 @@ driver.find_element_by_css_selector("#selItemGrade > div.lui-select__option > la
 # label:nth-child(9) : 에스더
 driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭
 
-'''html = driver.page_source  # 웹 페이지의 html 저장
-soup = BeautifulSoup(html, 'html.parser')
-#auction_list = soup.select('#auctionListTbody')  # '#아이디이름'
-auction_list = soup.select('.td') 
 
-#print(soup)
-print(auction_list)'''
+
+### 페이지 넘기기 ###
+time.sleep(2)   # element is not attached to the page document 에러 해결
+driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[3]').click() # 2
+
+time.sleep(2)   
+driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[11]').click() # 10
+
+time.sleep(2)   
+driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[12]').click() # > (11)
+
+time.sleep(2)   
+driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[3]').click() # 12 (13을 넣으면 >>가 눌린다)
+
+# 즉, 3~12까지의 숫자가 반복되어야 함 (for문을 사용하도록 한다)
+
+
+
+
 
 
 # 귀걸이
