@@ -1,4 +1,4 @@
-# 
+# x_path의 각성별 라벨
 # '*[@id="selEtcSub_0"]/div[2]/label[{}]'.format()
 
 arousal_dict = {
