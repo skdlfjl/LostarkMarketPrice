@@ -38,7 +38,7 @@ driver.find_element_by_xpath('/html/body/div[1]/section[1]/div/div/section/artic
 auction_url = "https://lostark.game.onstove.com/Auction"
 driver.get(auction_url)
 
-# 여기까지 하면 로그인하여 로스트아크 경매장 홈페이지에 들어가집니다
+# 여기까지 하면 로그인하여 로스트아크 경매장 홈페이지에 들어가집니다 (여기까지 9초)
 
 
 
@@ -108,7 +108,7 @@ driver.find_element_by_xpath('//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format
 
 
 search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
-driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭
+driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭 (여기까지 총 13초) >> 검색 자체만으로 걸리는 시간은 4초
 
 
 
