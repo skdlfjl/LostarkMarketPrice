@@ -64,33 +64,57 @@ driver.find_element_by_xpath('//*[@id="modal-deal-option"]/div/div/div[1]/div[1]
 # //*[@id="modal-deal-option"]/div/div/div[1]/div[1]/table/tbody/tr[3]/td[1]/div/div[2]/label[8] : 고대
 
 
-# 각인 선택1
+# 각인 선택1 + 활성값 입력
 option1_x_path = '//*[@id="selEtc_0"]/div[1]' 
 driver.find_element_by_xpath(option1_x_path).click()  # 기타 선택1 클릭
 driver.find_element_by_xpath('//*[@id="selEtc_0"]/div[2]/label[4]').click()  # 각인 효과 클릭
 option1Sub_x_path = '//*[@id="selEtcSub_0"]/div[1]' 
 driver.find_element_by_xpath(option1Sub_x_path).click()  # 옵션 선택 클릭
 driver.find_element_by_xpath('//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(0, 2)).click()  # '각성' 각인 선택
-# 각인 선택2
+driver.find_element_by_id('txtEtcMin_0').send_keys('5')  # 각성의 활성값이 5인것만 출력
+driver.find_element_by_id('txtEtcMax_0').send_keys('5')
+
+# 각인 선택2 + 활성값 입력
 option2_x_path= '//*[@id="selEtc_1"]/div[1]'
 driver.find_element_by_xpath(option2_x_path).click()  # 기타 선택2 클릭
 driver.find_element_by_xpath('//*[@id="selEtc_1"]/div[2]/label[4]').click()  # 각인 효과 클릭
 option2Sub_x_path = '//*[@id="selEtcSub_1"]/div[1]' 
 driver.find_element_by_xpath(option2Sub_x_path).click()  # 옵션 선택 클릭
 driver.find_element_by_xpath('//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(1, 3)).click()  # '갈증' 각인 선택
+driver.find_element_by_id('txtEtcMin_1').send_keys('3')  # 갈증의 활성값이 3인것만 출력
+driver.find_element_by_id('txtEtcMax_1').send_keys('3')
 # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(0, 2) : 각성
 # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(1, 3) : 갈증
 # dict_x_path.py dict 가져와서 format사용
 # selEtcSub_0 = 선택1 / selEtcSub_1 = 선택2
 # label[2] = 각성 / label[3] = 갈증
 
+
+# 특성 선택1
+option3_x_path= '//*[@id="selEtc_2"]/div[1]'
+driver.find_element_by_xpath(option3_x_path).click()  # 기타 선택3 클릭
+driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[3]').click()  # 전투 특성 클릭
+option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+driver.find_element_by_xpath(option3Sub_x_path).click()  # 옵션 선택 클릭
+driver.find_element_by_xpath('//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(2, 2)).click()  # '치명' 특성 선택
+# 특성 선택2
+option4_x_path= '//*[@id="selEtc_3"]/div[1]'
+driver.find_element_by_xpath(option4_x_path).click()  # 기타 선택3 클릭
+driver.find_element_by_xpath('//*[@id="selEtc_3"]/div[2]/label[3]').click()  # 전투 특성 클릭
+option4Sub_x_path = '//*[@id="selEtcSub_3"]/div[1]' 
+driver.find_element_by_xpath(option4Sub_x_path).click()  # 옵션 선택 클릭
+driver.find_element_by_xpath('//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(3, 3)).click()  # '치명' 특성 선택
+# label[2] = 치명 / label[3] = 특화
+
+
 search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
 driver.find_element_by_xpath(search_x_path).click()   # 검색버튼 클릭
 
 
 
-### 페이지 넘기기 ###
 
+### 페이지 넘기기 ###
+'''
 x_index = 3
 while x_index < 13:
     time.sleep(1.2)   # element is not attached to the page document 에러 해결
@@ -98,7 +122,7 @@ while x_index < 13:
     
     # 해당 페이지 크롤링 코드 추가해야됨
 
-    x_index += 1
+    x_index += 1'''
 
 
 
