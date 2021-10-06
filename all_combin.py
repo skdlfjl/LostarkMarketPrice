@@ -2,115 +2,105 @@ from itertools import combinations, permutations, product
 import operator
 import numpy as np
 
+act_33 = [3,3]   # 유물등급
+act_43 = [4,3]
+act_53 = [5,3]
+act_63 = [6,3]   # 고대등급
 
-act_33 = [3,3,0,0,0]
-act_43 = [4,3,0,0,0]
-act_53 = [5,3,0,0,0]
-act_63 = [6,3,0,0,0]
-
-combi = list(permutations(act_33, 5))
-combi_33 = list(set(combi))
-combi = list(permutations(act_43, 5))
-combi_43 = list(set(combi))
-combi = list(permutations(act_53, 5))
-combi_53 = list(set(combi))
-combi = list(permutations(act_63, 5))
-combi_63 = list(set(combi))
-
-#combi = combi_33 + combi_43 + combi_53 + combi_63   # 63까지 고려 (고대등급)
-all_combi = combi_33 + combi_43 + combi_53
-
-all_combi_index = []
-for i in range(len(all_combi)):
-    all_combi_index.append(i)
-
-index_4 = list(permutations(all_combi_index, 4))   # 인덱스를 추출해서 섞어준다
-#print(index_4[0])     
-# (0, 1, 2, 3)  >> all_combi리스트 안에 들어있는 0번째, 1번째, 2번째, 3번째 튜플의 인덱스
-
-
-#--------------------------------------------------
-
-
-
-# input : 3 3 3 3 3 / 돌 : 7 7 / 각인서 : 12 9
-'''  
-    1. 원하는 각인과 각인 레벨 >>       (여기서 input으로 각인 이름과 레벨을 받습니다)
-    각성       >  3 Lv
-    갈증       >  3 Lv
-    강령술     >  3 Lv
-    강화 무기  >  3 Lv
-    강화 방패  >  3 Lv
-    저장 변수(각인 이름과 레벨*5 저장) = ability / ability_lv
-
-
-     2. 적용할 돌 / 각인서1 / 각인서2의 능력치(활성도) >>     (위에서 받은 각인 이름을 가져와 쓰기)
-    각성       >  7
-    갈증       >  7
-    강령술     >  0
-    강화 무기  >  12
-    강화 방패  >  9
-    저장 변수()
-
-     3. 특성합 >>
-    (나중에 고려합시다....0)
-
-'''
-# input data
-ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패']
-ability_lv_act = [15, 15, 15, 15, 15]     # 입력받은 레벨에 *5 한 값을 저장한다
-ability_act = [7, 7, 0, 12, 9]
-#### 원하는 특성을 받을 변수가 필요합니다
-#### 원하는 특성합을 받을 변수가 필요합니다
-
-ability_act = list(map(operator.sub, ability_lv_act, ability_act))
-# ability_act는 [8, 8, 15, 3, 6]이 된다
-
-
-# 위에서 만들어둔 나올 수 있는 모든 조합을 저장한 리스트 combi에서 하나씩 가져와 
-# 5개 각인의 능력치가 합쳤을 때 8 8 15 3 6 이 되는 모든 조합을 찾는다
 necklace = []
 earring1 = []
 earring2 = []
 ring1 = []
 ring2 = []
 possible_combin = []
-for ex in all_combi:
-    for a, b, c, d in index_4:
-        if ex[0] + all_combi[a][0] + all_combi[b][0] + all_combi[c][0] + all_combi[d][0] == ability_act[0]:
-            if ex[1] + all_combi[a][1] + all_combi[b][1] + all_combi[c][1] + all_combi[d][1] == ability_act[1]:
-                if ex[2] + all_combi[a][2] + all_combi[b][2] + all_combi[c][2] + all_combi[d][2] == ability_act[2]:
-                    if ex[3] + all_combi[a][3] + all_combi[b][3] + all_combi[c][3] + all_combi[d][3] == ability_act[3]:
-                        if ex[4] + all_combi[a][4] + all_combi[b][4] + all_combi[c][4] + all_combi[d][4] == ability_act[4]:
-                            #print(ex, all_combi[a], all_combi[b], all_combi[c], all_combi[d])
-                            necklace.append(ex)
-                            earring1.append(all_combi[a])
-                            earring2.append(all_combi[b])
-                            ring1.append(all_combi[c])
-                            ring2.append(all_combi[d])
 
-                            a = [ex, all_combi[a], all_combi[b], all_combi[c], all_combi[d]]
-                            possible_combin.append(a)
-                            # possible_combin == [[(0, 5, 3, 0, 0), (0, 0, 3, 3, 0), (5, 0, 3, 0, 0), (3, 0, 0, 0, 6), (0, 3, 6, 0, 0)],
-                            #                     [(0, 4, 0, 0, 3), (0, 4, 0, 3, 0), (5, 0, 3, 0, 0), (0, 0, 6, 0, 3), (3, 0, 6, 0, 0)],
-                            #                     [(0, 5, 3, 0, 0), (0, 0, 3, 3, 0),               ......              (3, 0, 6, 0, 0)]]
-                            # 대충 이런식으로 생긴 중첩 리스트들이 나옵니다
-                            #
-                            # n은 조합의 총 개수
-                            # 두번째 []는 장신구의 종류 (0 = 목걸이 / 1 = 귀걸이1 / 2 = 귀걸이2 / 3 = 반지1 / 4 = 반지2)
-                            # 세번째 []는 각인의 종류 (0 = 각성 / 1 = 갈증 / 2 = 강령술 / 3 = 강화 무기 / 4 = 강화 방패)
-                            # ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패'] 를 참고하면 됩니다 (같은 인덱스를 가집니다)
-                            
-                            # possible_combin[n][0][0] == 목걸이 장신구의 '각성' 활성도
-                            # possible_combin[n][1][0] == 귀걸이1 장신구의 '갈증' 활성도
-                    
+'''#-----------------------------------------------------------
+# 각인 4개 input data
+ability = ['각성', '갈증', '강령술', '강화 무기']
+ability_lv = [3, 3, 3, 3]
+ability_lv_act = [i*5 for i in ability_lv]    # 입력받은 레벨에 *5 한 값을 저장한다
+ability_in_act = [???????????]
+#### 원하는 특성을 받을 변수가 필요합니다
+#### 원하는 특성합을 받을 변수가 필요합니다'''
+#-----------------------------------------------------------
+# 각인 5개 input data
+ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패']
+ability_lv = [3, 3, 3, 3, 3]
+ability_lv_act = [i*5 for i in ability_lv]    # 입력받은 레벨에 *5 한 값을 저장한다
+ability_in_act = [7, 7, 0, 12, 9]
+#### 원하는 특성을 받을 변수가 필요합니다
+#### 원하는 특성합을 받을 변수가 필요합니다
+#-----------------------------------------------------------
+'''# 각인 6개 (고대등급 x) input data
+ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패' '원한']
+ability_lv = [3, 3, 3, 3, 3, 1]
+ability_lv_act = [i*5 for i in ability_lv]    # 입력받은 레벨에 *5 한 값을 저장한다
+ability_in_act = [10, 10, 0, 12, 9, 0]
+#### 원하는 특성을 받을 변수가 필요합니다
+#### 원하는 특성합을 받을 변수가 필요합니다
+#-----------------------------------------------------------
+# 각인 6개 (고대등급 O) input data
+ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패' '원한']
+ability_lv = [3, 3, 3, 3, 3, 2]
+ability_lv_act = [i*5 for i in ability_lv]    # 입력받은 레벨에 *5 한 값을 저장한다
+ability_in_act = [10, 10, 0, 12, 12, 0]
+#### 원하는 특성을 받을 변수가 필요합니다
+#### 원하는 특성합을 받을 변수가 필요합니다'''
+#-----------------------------------------------------------
 
-                    else: continue
-                else: continue
-            else: continue
-        else: continue
-    else: continue
-# 여기까지 한 4분 걸림~~~~
+ability_act = list(map(operator.sub, ability_lv_act, ability_in_act))
+# ability_act는 ability_lv_act - ability_in_act (장신구로 채워야하는 활성도)
+
+
+# 각인 개수는 2개부터 6개까지 설정 가능하도록 프로그래밍 했다
+# 333332만 고대등급 장신구를 고려한다
+combi = list(permutations(act_33 + [0]*(len(ability)-2), len(ability)))  # 각인 4개면 [3, 3, 0, 0]
+combi_33 = list(set(combi))
+combi = list(permutations(act_43 + [0]*(len(ability)-2), len(ability)))
+combi_43 = list(set(combi))
+combi = list(permutations(act_53 + [0]*(len(ability)-2), len(ability)))
+combi_53 = list(set(combi))
+
+if 4 <= len(ability) <= 6 and sum(ability_lv) < 17:   # 각인 4,5,6개 + 333332이 아닐경우 - 고대등급 X
+    all_combi = combi_33 + combi_43 + combi_53
+    print('고대등급X) 모든 조합 구하기 성공!!')
+
+elif len(ability) == 6 and sum(ability_lv) == 17:     # 각인이 6개 + 333332인 경우 - 고대등급 O
+    combi = list(permutations(act_63 + [0]*(len(ability)-2), len(ability)))
+    combi_63 = list(set(combi))
+    all_combi = combi_33 + combi_43 + combi_53 + combi_63   # 63까지 고려 (고대등급)
+    print('고대등급O) 모든 조합 구하기 성공')
+
+else:
+    print('장신구 능력치로는 부족할경우 다시 작성하도록')
+
+all_combi_index = []
+for i in range(len(all_combi)):
+    all_combi_index.append(i)
+
+shuffle_index = list(permutations(all_combi_index, 4)) # 인덱스를 섞어준다
+# (0, 1, 2, 3) >> all_combi 리스트 안 0번째, 1번째, 2번째, 3번째 튜플의 인덱스
+# 인덱스는 무조건 4개가 나와야한다 (그래야 장신구 5개의 조합을 맞추기 때문)
+
+
+
+
+for neck in all_combi:
+    for a, b, c, d in shuffle_index:
+        for i in range(len(ability)):
+            if neck[i] + all_combi[a][i] + all_combi[b][i] + all_combi[c][i] + all_combi[d][i] == ability_act[i]:
+                if i == len(ability)-1:
+                    print(neck, all_combi[a], all_combi[b], all_combi[c], all_combi[d])
+                    necklace.append(neck)
+                    earring1.append(all_combi[a])
+                    earring2.append(all_combi[b])
+                    ring1.append(all_combi[c])
+                    ring2.append(all_combi[d])
+                    a = [neck, all_combi[a], all_combi[b], all_combi[c], all_combi[d]]
+                    possible_combin.append(a)
+            else: break
+
+
 
 
 # 크롤링할 조합 구하기
@@ -125,7 +115,6 @@ print(result_earring)
 print('\n')
 print(result_ring)
 print('\n')
-# 
 
 # result_necklace, result_earring, result_ring 세가지를 이용하여 데이터를 크롤링해야 합니다.
 # crawling.py를 함수화 시켜 입력값에 따라 크롤링이 가능하도록 변경해야 합니다
@@ -148,5 +137,8 @@ for i in range(len(possible_combin)):
 for row in combin_:
     print(row)
 
-# 여기까지 3분
+# 여기까지 3~4분
+
+
+
 
