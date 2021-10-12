@@ -1,5 +1,6 @@
 # x_path의 각성별 라벨
 # '*[@id="selEtcSub_0"]/div[2]/label[{}]'.format()
+# //*[@id="selEtcSub_0"]/div[2]/label[86] : 황후의 은총
 
 arousal_dict = {
 
@@ -99,4 +100,16 @@ arousal_dict = {
 
 }
 
-# //*[@id="selEtcSub_0"]/div[2]/label[86] : 황후의 은총
+
+
+# x_path의 특성별 라벨
+character_dict = {
+
+    '치명' : 2,
+    '특화' : 3,
+    '제압' : 4,
+    '신속' : 5,
+    '인내' : 6,
+    '숙련' : 7
+
+}
