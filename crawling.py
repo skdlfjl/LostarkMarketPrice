@@ -22,7 +22,7 @@ def crawling_text(in_list, out_list):
         for i in in_list:
             out_list.append(i.text.replace(" ","").replace("\n",""))
 
-# {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} 형태로 바꿔주는 함수 (!!!!!특성이 2개인 목걸이 전용!!!!!!)
+# {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} 형태로 바꿔주는 함수
 def effect_dict(effect_all, cha):
     for i in range(len(effect_all)):
         effect_all[i] = effect_all[i].replace('[','').replace('활성도','').split(']+')
@@ -107,21 +107,31 @@ def item_select(driver, item, grade, cha):
     driver.find_element_by_xpath(option2_x_path).send_keys(Keys.ENTER)  # 기타 선택2 클릭
     driver.find_element_by_xpath('//*[@id="selEtc_1"]/div[2]/label[3]').click()  # 각인 효과 클릭
 
-    # 특성 선택1
-    option3_x_path= '//*[@id="selEtc_2"]/div[1]'
-    driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
-    driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[2]').click()  # 전투 특성 클릭
-    option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
-    driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha[0])).click()  # 2 (치명) 특성 선택
-    # 특성 선택2
-    option4_x_path= '//*[@id="selEtc_3"]/div[1]'
-    driver.find_element_by_xpath(option4_x_path).send_keys(Keys.ENTER)  # 기타 선택4 클릭
-    driver.find_element_by_xpath('//*[@id="selEtc_3"]/div[2]/label[2]').click()  # 전투 특성 클릭
-    option4Sub_x_path = '//*[@id="selEtcSub_3"]/div[1]' 
-    driver.find_element_by_xpath(option4Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_3"]/div[2]/label[{}]'.format(cha[1])).click()  # 3 (특화) 특성 선택
-    # label[2] = 치명 / label[3] = 특화
+    if len(cha) == 2:    ## 목걸이
+        # 특성 선택1
+        option3_x_path= '//*[@id="selEtc_2"]/div[1]'
+        driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
+        driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[2]').click()  # 전투 특성 클릭
+        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+        driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha[0])).click()  # 2 (치명) 특성 선택
+        # 특성 선택2
+        option4_x_path= '//*[@id="selEtc_3"]/div[1]'
+        driver.find_element_by_xpath(option4_x_path).send_keys(Keys.ENTER)  # 기타 선택4 클릭
+        driver.find_element_by_xpath('//*[@id="selEtc_3"]/div[2]/label[2]').click()  # 전투 특성 클릭
+        option4Sub_x_path = '//*[@id="selEtcSub_3"]/div[1]' 
+        driver.find_element_by_xpath(option4Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_3"]/div[2]/label[{}]'.format(cha[1])).click()  # 3 (특화) 특성 선택
+        # label[2] = 치명 / label[3] = 특화
+
+    elif len(cha) == 1:    ## 귀걸이, 반지
+        # 특성 선택
+        option3_x_path= '//*[@id="selEtc_2"]/div[1]'
+        driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
+        driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[2]').click()  # 전투 특성 클릭
+        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+        driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha)).click()  # 특성 선택
 
 
 
@@ -129,8 +139,8 @@ def item_select(driver, item, grade, cha):
     driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
 
-# 목걸이의 상세 옵션을 선택하여 검색 뒤, 크롤링 + 전처리 해줍니다 (input = 크롬드라이버, 장신구 종류, [각인, 활성도]*2, 특성*2)
-def necklace(driver, eff, cha):
+# 목걸이의 상세 옵션을 선택하여 검색 뒤, 크롤링 + 전처리 해줍니다 (input = 크롬드라이버, [각인, 활성도]*2, 특성*2)
+def main(driver, eff, cha):
     # 상세 옵션 검색버튼 클릭
     detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
     driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
@@ -181,50 +191,6 @@ def necklace(driver, eff, cha):
     
     return item_list
 
-
-
-# 귀걸이, 반지 (해당 함수를 실행하기 전에 item_select()를 통해 필히 장신구 종류를 전환해주세요)
-# 목걸이와 다르게 페이지 이동이 필수적으로 필요합니다
-# 특성이 한가지뿐!! 각 특성별로 한번씩 실행되어야 합니다 (치명과 특화라면 치명1번 특화1번) 
-# cha가 리스트 형태가 아닙니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-def earring_ring(driver, eff, cha):
-    # 상세 옵션 검색버튼 클릭
-    detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
-    driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
-
-    # 각인 선택1 + 활성값 입력
-    option1_x_path = '//*[@id="selEtc_0"]/div[1]' 
-    driver.find_element_by_xpath(option1_x_path).send_keys(Keys.ENTER)  # 기타 선택1 클릭
-    driver.find_element_by_xpath('//*[@id="selEtc_0"]/div[2]/label[3]').click()  # 각인 효과 클릭
-    option1Sub_x_path = '//*[@id="selEtcSub_0"]/div[1]' 
-    driver.find_element_by_xpath(option1Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_0"]/div[2]/label[{}]'.format(eff[0][0])).click()  # 4 (강령술) 각인 선택
-    driver.find_element_by_id('txtEtcMin_0').send_keys(str(eff[0][1]))  # 위 각인의 활성값이 6인것만 출력
-    driver.find_element_by_id('txtEtcMax_0').send_keys(str(eff[0][1]))
-
-    # 각인 선택2 + 활성값 입력
-    option2_x_path= '//*[@id="selEtc_1"]/div[1]'
-    driver.find_element_by_xpath(option2_x_path).send_keys(Keys.ENTER)  # 기타 선택2 클릭
-    driver.find_element_by_xpath('//*[@id="selEtc_1"]/div[2]/label[3]').click()  # 각인 효과 클릭
-    option2Sub_x_path = '//*[@id="selEtcSub_1"]/div[1]' 
-    driver.find_element_by_xpath(option2Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_1"]/div[2]/label[{}]'.format(eff[1][0])).click()  # 53 (원한) 각인 선택
-    driver.find_element_by_id('txtEtcMin_1').send_keys(str(eff[1][1]))  # 위 각인의 활성값이 3인것만 출력
-    driver.find_element_by_id('txtEtcMax_1').send_keys(str(eff[1][1]))
-
-    # 특성 선택
-    option3_x_path= '//*[@id="selEtc_2"]/div[1]'
-    driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
-    driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[2]').click()  # 전투 특성 클릭
-    option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
-    driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha)).click()  # 2 (치명) 특성 선택
-    # label[2] = 치명 / label[3] = 특화
-
-    search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
-    driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭 (여기까지 총 13초) >> 검색 자체만으로 걸리는 시간은 4초
-
-    
     ### 페이지 넘기기 ###
     '''
     x_index = 3
