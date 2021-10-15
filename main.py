@@ -12,6 +12,8 @@ import dict_x_path as dic
 ability = ['각성', '갈증', '강령술', '강화 무기', '강화 방패', '원한']
 ability_lv = [3, 3, 3, 3, 3, 2]
 item_act = [10, 0, 0, 12, 12, 8]    # 333332
+character = ['치명', '특화']    # [특성1, 특성2] 
+character_act = [1500, 500]    # 원하는 특성값   
 #-----------------------------------------------------------------------------------------
 
 def tuple_index(tu, list_):
@@ -21,53 +23,116 @@ def tuple_index(tu, list_):
             eff_list.append([ability[i], tu[i]])
     list_.append(eff_list)
 
-def x_path_change(list_):
+def arousal_x_path(list_):
     list_[0][0] = dic.arousal_dict[list_[0][0]]
     list_[1][0] = dic.arousal_dict[list_[1][0]]
 
+def x_path(in_list, out_list):
+    for tu in in_list:
+        tuple_index(tu, out_list)
+    # [[['강령술', 6], ['원한', 3]], ... , [['갈증', 6], ['강화 무기', 3]]]
+    for list_ in out_list:
+        arousal_x_path(list_)
+    # [[[4, 6], [53, 3]], ... ] >> xpath에 맞춰 바꿔줌 ('강령술' == 4)
+
+def character_x_path(character):
+    cha = [0, 0]
+    cha[0] = dic.character_dict[character[0]]
+    cha[1] = dic.character_dict[character[1]]
+    return cha
+
+# input >> 크롬드라이버, [각인xpath, 활성도]리스트(arousal_list), 장신구xpath, 
+# 현재까지 가능한 모든 장신구의 조합(possible_combin), 크롤링해서 저장할 리스트(item_data)
+def crawling(driver, arousal_list, item, possible_combin, item_data):
+    combin_ = []
+    for i in range(len(arousal_list)):
+        time.sleep(1)
+        item_list = cr.main(driver, arousal_list[i], item)
+        if item_list != []:
+            item_data.append(item_list)
+            for j in range(len(possible_combin)):
+                if possible_combin[j][0] == result_necklace[i]:
+                    combin_.append(possible_combin[j])
+    return combin_
 
 # 목걸이의 유니크 조합만 저장해둔 result_necklace
 # 나올 수 있는 가능한 모든 조합을 저장해둔 possible_combin
 result_necklace, possible_combin = com.main(ability, ability_lv, item_act)
 
+
+
+######### 목걸이 #########
+# 필요한 변수 선언
+# item : 장신구의 x_path
+# cha : 특성의 x_path
+# grade : 장신구 등급의 x_path
+# necklace_list : [[[각인1의 x_path, 활성값], [각인2의 x_path, 활성값]], ... ] 
+item = 11   # 장신구 (11 = 목걸이 (특성2개))
 necklace_list = []
-for tu in result_necklace:
-    tuple_index(tu, necklace_list)
-#print(necklace_list) # [[['강령술', 6], ['원한', 3]], ... , [['갈증', 6], ['강화 무기', 3]]]
+x_path(result_necklace, necklace_list)
+cha = character_x_path(character)
+if len(ability) == 6:
+    # 레벨의 합이 16이고, 보물+각인서 합이 35이상 39이하인 경우 53, 63 (333331)
+    if sum(ability_lv) == 16 and 35 <= sum(item_act) <= 39:
+        print('유물등급 + 고대등급 고려 >> 전체 : 1')
+        grade = 1
+    # 레벨의 합이 17이고, 보물+각인서 합이 40이상인 경우 63 (333332)
+    elif sum(ability_lv) == 17 and 40 <= sum(item_act):
+        print('고대등급만 고려 >> 고대 : 8')
+        grade = 8
+else:
+    print('유물등급만 고려 >> 유물 : 7')
+    grade = 7
 
-for list_ in necklace_list:
-    x_path_change(list_)
-#print(necklace_list[0])  # [[4, 6], [53, 3]] >> xpath에 맞춰 바꿔줌 ('강령술' == 4)
-
-
-### input 고정값
-item = 11       # 장신구 (11 = 목걸이 (특성2개))
-cha = [2, 3]    # [특성1, 특성2]   ############ 특성도 입력받도록 수정해야합니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-driver = cr.enter()      # 경매장 접속 + return값으로 driver 받기
-
-combin_ = []   
-necklace_ = []
-for i in range(len(necklace_list)):
-    time.sleep(1)
-    item_list = cr.main(driver, item, necklace_list[i], cha)
-    if item_list != []:
-        necklace_.append(item_list)
-        for j in range(len(possible_combin)):
-            if possible_combin[j][0] == result_necklace[i]:
-                combin_.append(possible_combin[j])
+driver = cr.enter()   # 경매장 접속 + return값으로 driver 받기
+cr.item_select(driver, item, grade, cha)  # 상세옵션에서 목걸이 + 장신구 등급 + 특성 선택 
 
 
-## 결과 찍어보기
-for row in combin_:
+necklace_data = []    # 크롤링한 목걸이 데이터들을 해당 리스트에 저장
+possible_combin = crawling(driver, necklace_list, item, possible_combin, necklace_data)
+
+### 결과 찍어보기
+necklace_data = sum(necklace_data, [])
+print('크롤링한 목걸이 데이터 :')
+for row in necklace_data:
     print(row)
 
+# 귀걸이1의 유니크 조합 구하기
+earring_1 = []
+for row in possible_combin:
+    earring_1.append(row[1])    
+
+result_earring1 = list(set(earring_1))
 print('\n')
+print('result_earring1 :', result_earring1)  
 
-necklace_ = sum(necklace_, [])
-for row in necklace_:
+
+
+
+######### 귀걸이1 #########
+item = 12  # 장신구 (12 = 귀걸이 (특성1개))
+earring1_list = []
+x_path(result_earring1, earring1_list)
+# cha와 grade는 목걸이에서 썼던거 그대로 사용
+
+earring1_data = []
+
+for i in range(2):
+    # 상세옵션에서 귀걸이 + 장신구 등급 + 특성(1개!!!) 선택
+    cr.item_select(driver, item, grade, cha[i])
+    possible_combin = crawling(driver, earring1_list, item, possible_combin, earring1_data)
+
+### 결과 찍어보기
+earring1_data = sum(earring1_data, [])
+print('크롤링한 귀걸이1 데이터 :')
+for row in earring1_data:
     print(row)
 
+# 귀걸이2의 유니크 조합 구하기
+earring_2 = []
+for row in possible_combin:
+    earring_2.append(row[2])    
 
-# 이제 combin_에서 귀걸이나 반지의 유니크 조합을 구하면 됨
-# 추가로 크롤링 코드에서, 같은 장신구일때는 굳이 장신구를 다시한번 클릭하지 않아도 되기때문에 향후 그부분 수정하면 좋을 것 같음
+result_earring2 = list(set(earring_2))
+print('\n')
+print('result_earring2 :', result_earring2) 
