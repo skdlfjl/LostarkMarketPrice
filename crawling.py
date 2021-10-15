@@ -23,11 +23,11 @@ def crawling_text(in_list, out_list):
             out_list.append(i.text.replace(" ","").replace("\n",""))
 
 # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} 형태로 바꿔주는 함수
-def effect_dict(effect_all, cha):
+def effect_dict(effect_all, item):
     for i in range(len(effect_all)):
         effect_all[i] = effect_all[i].replace('[','').replace('활성도','').split(']+')
 
-    if len(cha) == 2:    # 만약 특성이 2개라면? (목걸이)
+    if item == 11:    # 목걸이
         effect_list = []
         for i in range(len(effect_all)):
             if i % 5 == 0:
@@ -38,7 +38,7 @@ def effect_dict(effect_all, cha):
             dic = { i[0][0] : int(i[0][1]), i[1][0] : int(i[1][1]), i[2][0] : int(i[2][1]), i[3][0] : int(i[3][1]), i[4][0] : int(i[4][1])}
             dict_list.append(dic)
 
-    elif len(cha) == 1:  # 특성이 1개라면? (귀걸이, 반지)
+    elif item == 12 or 13:  # 귀걸이, 반지
         effect_list = []
         for i in range(len(effect_all)):
             if i % 4 == 0:
@@ -51,7 +51,7 @@ def effect_dict(effect_all, cha):
     #print(dict_list)
     return dict_list
 
-#---------------------------------------------------------
+#---------------------------------------------------------//*[@id="selCategoryDetail"]/div[2]/label[11]
 
 # 해당 함수 실행시 로그인하여 로스트아크 경매장 홈페이지에 들어가집니다 (최초 1번만 실행)
 def enter():
@@ -76,7 +76,7 @@ def enter():
     return driver
 
 
-# 상세 옵션 검색버튼 클릭 후 장신구 선택 (목걸이? 귀걸이? 반지?)
+# 상세 옵션 검색버튼 클릭 후 장신구 선택 (목걸이? 반지? 팔찌?)
 def item_select(driver, item, grade, cha):
     detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
     #driver.find_element_by_xpath(detail_option_x_path).click()  # 상세 옵션 검색 클릭
@@ -86,10 +86,9 @@ def item_select(driver, item, grade, cha):
     category_x_path = '//*[@id="selCategoryDetail"]/div[1]'
     driver.find_element_by_xpath(category_x_path).send_keys(Keys.ENTER)  # 카테고리 클릭
     driver.find_element_by_xpath('//*[@id="selCategoryDetail"]/div[2]/label[{}]'.format(item)).click()
-    # //*[@id="selCategoryDetail"]/div[2]/label[10] : 전체
     # //*[@id="selCategoryDetail"]/div[2]/label[11] : 목걸이
-    # //*[@id="selCategoryDetail"]/div[2]/label[12] : 반지
-    # //*[@id="selCategoryDetail"]/div[2]/label[13] : 팔찌
+    # //*[@id="selCategoryDetail"]/div[2]/label[12] : 귀걸이
+    # //*[@id="selCategoryDetail"]/div[2]/label[13] : 반지
 
     # 아이템 등급 선택
     class_x_path = '//*[@id="modal-deal-option"]/div/div/div[1]/div[1]/table/tbody/tr[3]/td[1]/div/div[1]'
@@ -107,7 +106,7 @@ def item_select(driver, item, grade, cha):
     driver.find_element_by_xpath(option2_x_path).send_keys(Keys.ENTER)  # 기타 선택2 클릭
     driver.find_element_by_xpath('//*[@id="selEtc_1"]/div[2]/label[3]').click()  # 각인 효과 클릭
 
-    if len(cha) == 2:    ## 목걸이
+    if item == 11:    ## 목걸이
         # 특성 선택1
         option3_x_path= '//*[@id="selEtc_2"]/div[1]'
         driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
@@ -124,7 +123,7 @@ def item_select(driver, item, grade, cha):
         driver.find_element_by_xpath('//*[@id="selEtcSub_3"]/div[2]/label[{}]'.format(cha[1])).click()  # 3 (특화) 특성 선택
         # label[2] = 치명 / label[3] = 특화
 
-    elif len(cha) == 1:    ## 귀걸이, 반지
+    elif item ==  12 or 13:    ## 귀걸이, 반지
         # 특성 선택
         option3_x_path= '//*[@id="selEtc_2"]/div[1]'
         driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
@@ -133,14 +132,12 @@ def item_select(driver, item, grade, cha):
         driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
         driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha)).click()  # 특성 선택
 
-
-
     search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
     driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
 
 # 목걸이의 상세 옵션을 선택하여 검색 뒤, 크롤링 + 전처리 해줍니다 (input = 크롬드라이버, [각인, 활성도]*2, 특성*2)
-def main(driver, eff, cha):
+def main(driver, eff, item):
     # 상세 옵션 검색버튼 클릭
     detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
     driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
@@ -182,7 +179,7 @@ def main(driver, eff, cha):
     price_list = []        
     crawling_text(name, name_list)
     crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
-    effect_list = effect_dict(effect_all, cha)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+    effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
     crawling_text(price, price_list)
 
     item_list = []
