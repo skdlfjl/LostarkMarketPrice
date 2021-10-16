@@ -128,73 +128,161 @@ def item_select(driver, item, grade, cha):
         option3_x_path= '//*[@id="selEtc_2"]/div[1]'
         driver.find_element_by_xpath(option3_x_path).send_keys(Keys.ENTER)  # 기타 선택3 클릭
         driver.find_element_by_xpath('//*[@id="selEtc_2"]/div[2]/label[2]').click()  # 전투 특성 클릭
-        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
-        driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-        driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha)).click()  # 특성 선택
+        # 상세 특성은 아래 크롤링할때 선택하도록 한다
 
     search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
     driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
 
 # 목걸이의 상세 옵션을 선택하여 검색 뒤, 크롤링 + 전처리 해줍니다 (input = 크롬드라이버, [각인, 활성도]*2, 특성*2)
-def main(driver, eff, item):
-    # 상세 옵션 검색버튼 클릭
-    detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
-    driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
+def main(driver, eff, item, cha):
+    if item == 11:
+        ### 목걸이 크롤링 해오기 ###
 
-    # 각인 선택1 + 활성값 입력
-    option1Sub_x_path = '//*[@id="selEtcSub_0"]/div[1]' 
-    driver.find_element_by_xpath(option1Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_0"]/div[2]/label[{}]'.format(eff[0][0])).click()  # 4 (강령술) 각인 선택
-    driver.find_element_by_id('txtEtcMin_0').send_keys(str(eff[0][1]))  # 위 각인의 활성값이 6인것만 출력
-    driver.find_element_by_id('txtEtcMax_0').send_keys(str(eff[0][1]))
+        # 상세 옵션 검색버튼 클릭
+        detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
+        driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
 
-    # 각인 선택2 + 활성값 입력
-    option2Sub_x_path = '//*[@id="selEtcSub_1"]/div[1]' 
-    driver.find_element_by_xpath(option2Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
-    driver.find_element_by_xpath('//*[@id="selEtcSub_1"]/div[2]/label[{}]'.format(eff[1][0])).click()  # 53 (원한) 각인 선택
-    driver.find_element_by_id('txtEtcMin_1').send_keys(str(eff[1][1]))  # 위 각인의 활성값이 3인것만 출력
-    driver.find_element_by_id('txtEtcMax_1').send_keys(str(eff[1][1]))
+        # 각인 선택1 + 활성값 입력
+        option1Sub_x_path = '//*[@id="selEtcSub_0"]/div[1]' 
+        driver.find_element_by_xpath(option1Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_0"]/div[2]/label[{}]'.format(eff[0][0])).click()  # 4 (강령술) 각인 선택
+        driver.find_element_by_id('txtEtcMin_0').send_keys(str(eff[0][1]))  # 위 각인의 활성값이 6인것만 출력
+        driver.find_element_by_id('txtEtcMax_0').send_keys(str(eff[0][1]))
 
-    # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(0, 2) : 각성
-    # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(1, 3) : 갈증
-    # dict_x_path.py dict 가져와서 format사용
-    # selEtcSub_0 = 선택1 / selEtcSub_1 = 선택2
-    # label[2] = 각성 / label[3] = 갈증
+        # 각인 선택2 + 활성값 입력
+        option2Sub_x_path = '//*[@id="selEtcSub_1"]/div[1]' 
+        driver.find_element_by_xpath(option2Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_1"]/div[2]/label[{}]'.format(eff[1][0])).click()  # 53 (원한) 각인 선택
+        driver.find_element_by_id('txtEtcMin_1').send_keys(str(eff[1][1]))  # 위 각인의 활성값이 3인것만 출력
+        driver.find_element_by_id('txtEtcMax_1').send_keys(str(eff[1][1]))
 
-    search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
-    driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
+        # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(0, 2) : 각성
+        # '//*[@id="selEtcSub_{0}"]/div[2]/label[{1}]'.format(1, 3) : 갈증
+        # dict_x_path.py dict 가져와서 format사용
+        # selEtcSub_0 = 선택1 / selEtcSub_1 = 선택2
+        # label[2] = 각성 / label[3] = 갈증
 
+        search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
+        driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
-    ### 크롤링 해오기 ###
-    time.sleep(1)
-    html = driver.page_source # 페이지의 elements모두 가져오기
-    soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
-    name = soup.select('span.name')
-    effect = soup.select('div.effect > ul > li')
-    price = soup.select('div.price-buy')
+        time.sleep(1)
+        html = driver.page_source # 페이지의 elements모두 가져오기
+        soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+        name = soup.select('span.name')
+        effect = soup.select('div.effect > ul > li')
+        price = soup.select('div.price-buy')
 
-    name_list = []
-    effect_all = []  
-    price_list = []        
-    crawling_text(name, name_list)
-    crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
-    effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
-    crawling_text(price, price_list)
+        name_list = []
+        effect_all = []  
+        price_list = []        
+        crawling_text(name, name_list)
+        crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+        effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+        crawling_text(price, price_list)
 
-    item_list = []
-    for i in range(len(name_list)):
-        item_list.append([name_list[i], effect_list[i], price_list[i]])
-    
-    return item_list
-
-    ### 페이지 넘기기 ###
-    '''
-    x_index = 3
-    while x_index < 13:
-        time.sleep(1.2)   # element is not attached to the page document 에러 해결
-        driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{x_index}]').send_keys(Keys.ENTER)
+        item_list = []
+        for i in range(len(name_list)):
+            item_list.append([name_list[i], effect_list[i], price_list[i]])
         
-        # 해당 페이지 크롤링 코드 추가해야됨
+        return item_list
 
-        x_index += 1'''
+        ### 페이지 넘기기 ###
+        '''
+        x_index = 3
+        while x_index < 13:
+            time.sleep(1.2)   # element is not attached to the page document 에러 해결
+            driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{x_index}]').send_keys(Keys.ENTER)
+            
+            # 해당 페이지 크롤링 코드 추가해야됨
+
+            x_index += 1'''
+            
+
+    elif item == 12 or 13:
+        ### 귀걸이, 반지 크롤링 해오기 ###
+
+        ### 첫번째 특성 cha[0]
+        # 상세 옵션 검색버튼 클릭
+        detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
+        driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
+
+        # 각인 선택1 + 활성값 입력
+        option1Sub_x_path = '//*[@id="selEtcSub_0"]/div[1]' 
+        driver.find_element_by_xpath(option1Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_0"]/div[2]/label[{}]'.format(eff[0][0])).click()  # 4 (강령술) 각인 선택
+        driver.find_element_by_id('txtEtcMin_0').send_keys(str(eff[0][1]))  # 위 각인의 활성값이 6인것만 출력
+        driver.find_element_by_id('txtEtcMax_0').send_keys(str(eff[0][1]))
+
+        # 각인 선택2 + 활성값 입력
+        option2Sub_x_path = '//*[@id="selEtcSub_1"]/div[1]' 
+        driver.find_element_by_xpath(option2Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_1"]/div[2]/label[{}]'.format(eff[1][0])).click()  # 53 (원한) 각인 선택
+        driver.find_element_by_id('txtEtcMin_1').send_keys(str(eff[1][1]))  # 위 각인의 활성값이 3인것만 출력
+        driver.find_element_by_id('txtEtcMax_1').send_keys(str(eff[1][1]))
+        item_list = []
+
+        # 첫번째 특성 cha[0] 선택
+        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+        driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha[0])).click()  # 2 (치명) 특성 선택
+        
+        search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
+        driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
+
+        # 크롤링
+        time.sleep(1)
+        html = driver.page_source # 페이지의 elements모두 가져오기
+        soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+        name = soup.select('span.name')
+        effect = soup.select('div.effect > ul > li')
+        price = soup.select('div.price-buy')
+
+        name_list = []
+        effect_all1 = []  
+        effect_all2 = []
+        price_list = []        
+        crawling_text(name, name_list)
+        crawling_text(effect, effect_all1)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+        effect_list = effect_dict(effect_all1, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+        crawling_text(price, price_list)
+
+
+        ### 두번째 특성 cha[0]
+        # 상세 옵션 검색버튼 클릭
+        detail_option_x_path = '//*[@id="lostark-wrapper"]/div/main/div/div[3]/div[2]/form/fieldset/div/div[5]/button[2]'
+        driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
+
+        # 두번째 특성 cha[1] 선택
+        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+        driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
+        driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha[1])).click()  # 3 (특화) 특성 선택
+        
+        search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
+        driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
+
+        # 크롤링
+        time.sleep(1)
+        html = driver.page_source # 페이지의 elements모두 가져오기
+        soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+        name = soup.select('span.name')
+        effect = soup.select('div.effect > ul > li')
+        price = soup.select('div.price-buy')
+     
+        crawling_text(name, name_list)
+        crawling_text(effect, effect_all2)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+        effect_list += effect_dict(effect_all2, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+        crawling_text(price, price_list)
+
+        print('name_list :', name_list)
+        print('effect_list :', effect_list)
+        print('price_list :', price_list)
+
+        ### 첫번째, 두번째 특성 모두 포함된 데이터를 리스트 형태로 합쳐 리턴해준다
+        for i in range(len(name_list)):
+            item_list.append([name_list[i], effect_list[i], price_list[i]])
+        
+        return item_list
+
+
+
