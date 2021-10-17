@@ -169,34 +169,60 @@ def main(driver, eff, item, cha):
         time.sleep(1)
         html = driver.page_source # 페이지의 elements모두 가져오기
         soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
-        name = soup.select('span.name')
-        effect = soup.select('div.effect > ul > li')
-        price = soup.select('div.price-buy')
+        page = soup.select('a.pagination__last')  # 마지막 페이지 번호 가져오기
+        try:
+            last_page = int(re.findall("\d+", str(page))[1])
+        except IndexError:
+            last_page = 0
 
-        name_list = []
-        effect_all = []  
-        price_list = []        
-        crawling_text(name, name_list)
-        crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
-        effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
-        crawling_text(price, price_list)
+        #print('last_page :', last_page)
 
-        item_list = []
-        for i in range(len(name_list)):
-            item_list.append([name_list[i], effect_list[i], price_list[i]])
+        if last_page != 0:
+            item_list = []
+            next_page = 3
+            for next in range(next_page, next_page + last_page):
+                print('>>', next-2, '페이지 데이터 입니다.')
+                time.sleep(1.2)
+                html = driver.page_source # 페이지의 elements모두 가져오기
+                soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+                name = soup.select('span.name')
+                effect = soup.select('div.effect > ul > li')
+                price = soup.select('div.price-buy')
+
+                name_list = []
+                effect_all = []  
+                price_list = []        
+                crawling_text(name, name_list)
+                crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+                effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+                crawling_text(price, price_list)
+                
+                for i in range(len(name_list)):
+                    item_list.append([name_list[i], effect_list[i], price_list[i]])
+
+                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
         
+        elif last_page == 0:
+            time.sleep(1)
+            html = driver.page_source # 페이지의 elements모두 가져오기
+            soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+            name = soup.select('span.name')
+            effect = soup.select('div.effect > ul > li')
+            price = soup.select('div.price-buy')
+
+            name_list = []
+            effect_all = []
+            price_list = []        
+            crawling_text(name, name_list)
+            crawling_text(effect, effect_all)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+            effect_list = effect_dict(effect_all, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+            crawling_text(price, price_list)
+
+            item_list = []
+            for i in range(len(name_list)):
+                item_list.append([name_list[i], effect_list[i], price_list[i]])
+
         return item_list
-
-        ### 페이지 넘기기 ###
-        '''
-        x_index = 3
-        while x_index < 13:
-            time.sleep(1.2)   # element is not attached to the page document 에러 해결
-            driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{x_index}]').send_keys(Keys.ENTER)
-            
-            # 해당 페이지 크롤링 코드 추가해야됨
-
-            x_index += 1'''
             
 
     elif item == 12 or 13:
@@ -230,22 +256,54 @@ def main(driver, eff, item, cha):
         search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
         driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
-        # 크롤링
+
         time.sleep(1)
         html = driver.page_source # 페이지의 elements모두 가져오기
         soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
-        name = soup.select('span.name')
-        effect = soup.select('div.effect > ul > li')
-        price = soup.select('div.price-buy')
+        page = soup.select('a.pagination__last')  # 마지막 페이지 번호 가져오기
+        try:
+            last_page = int(re.findall("\d+", str(page))[1])
+        except IndexError:
+            last_page = 0
 
-        name_list = []
-        effect_all1 = []  
-        effect_all2 = []
-        price_list = []        
-        crawling_text(name, name_list)
-        crawling_text(effect, effect_all1)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
-        effect_list = effect_dict(effect_all1, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
-        crawling_text(price, price_list)
+        if last_page != 0:
+            item_list = []
+            next_page = 3
+            for next in range(next_page, next_page + last_page):
+                print('>>', next-2, '페이지 데이터 입니다.')
+                time.sleep(1.2)
+                html = driver.page_source # 페이지의 elements모두 가져오기
+                soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+                name = soup.select('span.name')
+                effect = soup.select('div.effect > ul > li')
+                price = soup.select('div.price-buy')
+
+                name_list = []
+                effect_all1 = []  
+                price_list = []        
+                crawling_text(name, name_list)
+                crawling_text(effect, effect_all1)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+                effect_list = effect_dict(effect_all1, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+                crawling_text(price, price_list)
+
+                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+        
+        elif last_page == 0:
+            # 크롤링
+            time.sleep(1)
+            html = driver.page_source # 페이지의 elements모두 가져오기
+            soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+            name = soup.select('span.name')
+            effect = soup.select('div.effect > ul > li')
+            price = soup.select('div.price-buy')
+
+            name_list = []
+            effect_all1 = []  
+            price_list = []        
+            crawling_text(name, name_list)
+            crawling_text(effect, effect_all1)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+            effect_list = effect_dict(effect_all1, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+            crawling_text(price, price_list)
 
 
         ### 두번째 특성 cha[0]
@@ -261,22 +319,55 @@ def main(driver, eff, item, cha):
         search_x_path = '//*[@id="modal-deal-option"]/div/div/div[2]/button[1]'
         driver.find_element_by_xpath(search_x_path).send_keys(Keys.ENTER)   # 검색버튼 클릭
 
-        # 크롤링
+
         time.sleep(1)
         html = driver.page_source # 페이지의 elements모두 가져오기
         soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
-        name = soup.select('span.name')
-        effect = soup.select('div.effect > ul > li')
-        price = soup.select('div.price-buy')
-     
-        crawling_text(name, name_list)
-        crawling_text(effect, effect_all2)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
-        effect_list += effect_dict(effect_all2, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
-        crawling_text(price, price_list)
+        page = soup.select('a.pagination__last')  # 마지막 페이지 번호 가져오기
+        try:
+            last_page = int(re.findall("\d+", str(page))[1])
+        except IndexError:
+            last_page = 0
 
-        print('name_list :', name_list)
+
+        if last_page != 0:
+            item_list = []
+            next_page = 3
+            for next in range(next_page, next_page + last_page):
+                print('>>', next-2, '페이지 데이터 입니다.')
+                time.sleep(1.2)
+                html = driver.page_source # 페이지의 elements모두 가져오기
+                soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+                name = soup.select('span.name')
+                effect = soup.select('div.effect > ul > li')
+                price = soup.select('div.price-buy')
+
+                effect_all2 = []
+                crawling_text(name, name_list)
+                crawling_text(effect, effect_all2)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+                effect_list += effect_dict(effect_all2, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+                crawling_text(price, price_list)
+
+                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+        
+        elif last_page == 0:
+            # 크롤링
+            time.sleep(1)
+            html = driver.page_source # 페이지의 elements모두 가져오기
+            soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
+            name = soup.select('span.name')
+            effect = soup.select('div.effect > ul > li')
+            price = soup.select('div.price-buy')
+
+            effect_all2 = []
+            crawling_text(name, name_list)
+            crawling_text(effect, effect_all2)           # ['[각성]활성도+6', '[원한]활성도+3', '[공격속도감소]활성도+1', ... ]  >> 전처리 필요함!!
+            effect_list += effect_dict(effect_all2, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
+            crawling_text(price, price_list)
+
+        '''print('name_list :', name_list)
         print('effect_list :', effect_list)
-        print('price_list :', price_list)
+        print('price_list :', price_list)'''
 
         ### 첫번째, 두번째 특성 모두 포함된 데이터를 리스트 형태로 합쳐 리턴해준다
         for i in range(len(name_list)):
