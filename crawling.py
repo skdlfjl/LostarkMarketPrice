@@ -181,7 +181,7 @@ def main(driver, eff, item, cha):
             item_list = []
             next_page = 3
             for next in range(next_page, next_page + last_page):
-                print('>>', next-2, '페이지 데이터 입니다.')
+                #print('>>', next-2, '페이지 데이터 입니다.')
                 time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
@@ -200,8 +200,11 @@ def main(driver, eff, item, cha):
                 for i in range(len(name_list)):
                     item_list.append([name_list[i], effect_list[i], price_list[i]])
 
-                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
-        
+                if next < 13:
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+                else: # next가 13이상일경우
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next-10}]').send_keys(Keys.ENTER)
+
         elif last_page == 0:
             time.sleep(1)
             html = driver.page_source # 페이지의 elements모두 가져오기
@@ -270,7 +273,7 @@ def main(driver, eff, item, cha):
             item_list = []
             next_page = 3
             for next in range(next_page, next_page + last_page):
-                print('>>', next-2, '페이지 데이터 입니다.')
+                #print('>>', next-2, '페이지 데이터 입니다.')
                 time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
@@ -286,7 +289,11 @@ def main(driver, eff, item, cha):
                 effect_list = effect_dict(effect_all1, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
                 crawling_text(price, price_list)
 
-                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+                if next < 13:
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+                else: # next가 13이상일경우
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next-10}]').send_keys(Keys.ENTER)
+
         
         elif last_page == 0:
             # 크롤링
@@ -334,7 +341,7 @@ def main(driver, eff, item, cha):
             item_list = []
             next_page = 3
             for next in range(next_page, next_page + last_page):
-                print('>>', next-2, '페이지 데이터 입니다.')
+                #print('>>', next-2, '페이지 데이터 입니다.')
                 time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
@@ -348,7 +355,10 @@ def main(driver, eff, item, cha):
                 effect_list += effect_dict(effect_all2, item)  # {'각성' : 6, '원한' : 3, '공격속도감소' : 1, '치명' : 403, '특화' : 446} >> 전처리 완료
                 crawling_text(price, price_list)
 
-                driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+                if next < 13:
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
+                else: # next가 13이상일경우
+                    driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next-10}]').send_keys(Keys.ENTER)
         
         elif last_page == 0:
             # 크롤링
