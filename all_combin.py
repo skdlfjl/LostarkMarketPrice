@@ -98,7 +98,7 @@ def main(ability, ability_lv, item_act):
             # 레벨의 합이 17이고, 보물+각인서 합이 40이상인 경우 63 (333332)
             elif sum(ability_lv) == 17 and 40 <= sum(item_act):
                 all_combi = combi_63
-                print('각인 6개 / 333331 / 40 <= (보물+각인서) : 63(고대)')
+                print('각인 6개 / 333332 / 40 <= (보물+각인서) : 63(고대)')
 
         ## all_combi : 
         #       사용자가 원하는 활성도를 위해, 적용 가능한 각인의 활성도의 모든 조합
