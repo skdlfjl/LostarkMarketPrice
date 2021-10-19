@@ -198,7 +198,10 @@ def main(driver, eff, item, cha):
                 crawling_text(price, price_list)
                 
                 for i in range(len(name_list)):
-                    item_list.append([name_list[i], effect_list[i], price_list[i]])
+                    if price_list[i] != '-':
+                        item_list.append([name_list[i], effect_list[i], int(price_list[i].replace(',', ''))])
+                    elif price_list[i] == '-':
+                        pass
 
                 if next < 13:
                     driver.find_element_by_xpath(f'//*[@id="auctionList"]/div[2]/a[{next}]').send_keys(Keys.ENTER)  # 다음페이지로
@@ -223,7 +226,10 @@ def main(driver, eff, item, cha):
 
             item_list = []
             for i in range(len(name_list)):
-                item_list.append([name_list[i], effect_list[i], price_list[i]])
+                if price_list[i] != '-':
+                    item_list.append([name_list[i], effect_list[i], int(price_list[i].replace(',', ''))])
+                elif price_list[i] == '-':
+                    pass
 
         return item_list
             
@@ -381,7 +387,10 @@ def main(driver, eff, item, cha):
 
         ### 첫번째, 두번째 특성 모두 포함된 데이터를 리스트 형태로 합쳐 리턴해준다
         for i in range(len(name_list)):
-            item_list.append([name_list[i], effect_list[i], price_list[i]])
+            if price_list[i] != '-':
+                item_list.append([name_list[i], effect_list[i], int(price_list[i].replace(',', ''))])
+            elif price_list[i] == '-':
+                pass
         
         return item_list
 
