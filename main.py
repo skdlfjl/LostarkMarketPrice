@@ -74,11 +74,17 @@ def crawling(driver, arousal_list, item, cha, possible_combin, result_item, item
                     combin_.append(possible_combin[j])
     return combin_
 
-def item2_data(result_item1, result_item2, item1_data):
+def item2_data(result_item1, crawling_item1, result_item2, item1_data, possible_combin, driver, item, cha, k):
     result = []
     item2_data = []
+    combin = []
     for tu in result_item2:
-        if tu in result_item1:
+        if tu in crawling_item1:  # 만약 tu가 이미 크롤링 되어있다면
+            # 일단 해당 possible_combin에서 해당 튜플이 존재하는 모든 조합들만 combin에 저장해둔다
+            for i in range(len(possible_combin)):
+                if possible_combin[i][k] == tu:
+                    combin.append(possible_combin[i])
+            # 그리고 데이터는 따로 item2_data에 저장해둔다 (나중에 리턴할것임)
             a = effect_list(tu)  # [['원한', 6], ['안정된 상태', 3]]
             for item1 in item1_data:
                 try:
@@ -86,9 +92,25 @@ def item2_data(result_item1, result_item2, item1_data):
                         item2_data.append(item1)
                 except:
                     pass
+        # crawling_item1에 들어있지 않지만 result_item1에 들어있는 조합은 크롤링 되지 않은 조합이기때문에 그냥 pass
+        elif tu in result_item1:
+            pass        
+        # 둘 다 속하지 않는다면 새로운 조합이므로 result 리스트에 추가하여 새로 크롤링 할 수 있도록 한다
         else:
             result.append(tu)
-    return result, item2_data
+
+    # 만약 result 리스트가 비어있지 않다면 새로운 크롤링이 필요하다는것! 
+    if len(result) != 0: 
+        item2_list = []
+        x_path(result, item2_list)
+
+        item2_data_ = []
+        combin_ = crawling(driver, item2_list, item, cha, possible_combin, result_item2, item2_data_, k)
+        item2_data += sum(item2_data_, [])
+        combin += combin_  
+
+    return item2_data, combin
+
 
 def save_csv(name, item_data):
     with open('{}.csv'.format(name), 'w', newline='', encoding='utf-8') as f: 
@@ -100,7 +122,7 @@ def save_csv(name, item_data):
 # 목걸이의 유니크 조합만 저장해둔 result_necklace
 # 나올 수 있는 가능한 모든 조합을 저장해둔 possible_combin
 result_necklace, possible_combin = com.main(ability, ability_lv, item_act)
-
+print('possible_combin :', len(possible_combin))
 
 
 ######### 목걸이 #########
@@ -116,14 +138,14 @@ cha = character_x_path(character)
 if len(ability) == 6:
     # 레벨의 합이 16이고, 보물+각인서 합이 35이상 39이하인 경우 53, 63 (333331)
     if sum(ability_lv) == 16 and 35 <= sum(item_act) <= 39:
-        print('유물등급 + 고대등급 고려 >> 전체 : 1')
+        #print('유물등급 + 고대등급 고려 >> 전체 : 1')
         grade = 1
     # 레벨의 합이 17이고, 보물+각인서 합이 40이상인 경우 63 (333332)
     elif sum(ability_lv) == 17 and 40 <= sum(item_act):
-        print('고대등급만 고려 >> 고대 : 8')
+        #print('고대등급만 고려 >> 고대 : 8')
         grade = 8
 else:
-    print('유물등급만 고려 >> 유물 : 7')
+    #print('유물등급만 고려 >> 유물 : 7')
     grade = 7
 
 driver = cr.enter()   # 경매장 접속 + return값으로 driver 받기
@@ -134,7 +156,8 @@ necklace_data = []    # 크롤링한 목걸이 데이터들을 해당 리스트�
 possible_combin = crawling(driver, necklace_list, item, cha, possible_combin, result_necklace, necklace_data, 0)
 necklace_data = sum(necklace_data, [])
 
-save_csv('necklace', necklace_data)   # 파일로 저장
+#save_csv('necklace', necklace_data)   # 파일로 저장
+print('목걸이 크롤링 후 possible_combin :', len(possible_combin))
 
 # 귀걸이1의 유니크 조합 구하기
 earring_1 = []
@@ -160,7 +183,15 @@ possible_combin = crawling(driver, earring1_list, item, cha, possible_combin, re
 # 목걸이1 = 0 / 귀걸이1 = 1 / 귀걸이2 = 2 / 반지1 = 3 / 반지2 = 4 (k)
 earring1_data = sum(earring1_data, [])
 
-save_csv('earring1', earring1_data)   # 파일로 저장
+#save_csv('earring1', earring1_data)   # 파일로 저장
+print('귀걸이1 크롤링 후 possible_combin :', len(possible_combin))
+
+# 크롤링된 귀걸이1의 유니크 조합 구하기
+earring1 = []
+for row in possible_combin:
+    earring1.append(row[1]) 
+crawling_earring1 = list(set(earring1))
+print('crawling_earring1 :', crawling_earring1)
 
 # 귀걸이2의 유니크 조합 구하기
 earring_2 = []
@@ -174,17 +205,10 @@ print('result_earring2 :', result_earring2)
 
 
 ######### 귀걸이2 #########
-result, earring2_data = item2_data(result_earring1, result_earring2, earring1_data)
+earring2_data, possible_combin = item2_data(result_earring1, crawling_earring1, result_earring2, earring1_data,  possible_combin, driver, item, cha, 2)
 
-if len(result) != 0:
-    earring2_list = []
-    x_path(result, earring2_list) # cha와 grade는 목걸이에서 썼던거 그대로 사용
-
-    earring2_data_ = []
-    possible_combin = crawling(driver, earring2_list, item, cha, possible_combin, result_earring2, earring2_data_, 2)
-    earring2_data = earring2_data + sum(earring2_data_, [])
-
-save_csv('earring2', earring2_data)   # 파일로 저장
+#save_csv('earring2', earring2_data)   # 파일로 저장
+print('귀걸이2 크롤링 후 possible_combin :', len(possible_combin))
 
 # 반지1의 유니크 조합 구하기
 ring_1 = []
@@ -209,12 +233,20 @@ ring1_data = []
 possible_combin = crawling(driver, ring1_list, item, cha, possible_combin, result_ring1, ring1_data, 3)
 ring1_data = sum(ring1_data, [])
 
-save_csv('ring1', ring1_data)   # 파일로 저장
+#save_csv('ring1', ring1_data)   # 파일로 저장
+print('반지1 크롤링 후 possible_combin :', len(possible_combin))
+
+# 크롤링된 반지1의 유니크 조합 구하기
+ring1 = []
+for row in possible_combin:
+    ring1.append(row[3]) 
+crawling_ring1 = list(set(ring1))
+print('crawling_ring1 :', crawling_ring1)
 
 # 반지2의 유니크 조합 구하기
 ring_2 = []
 for row in possible_combin:
-    ring_2.append(row[3])    
+    ring_2.append(row[4])    
 
 result_ring2 = list(set(ring_2))
 print('\n')
@@ -223,19 +255,11 @@ print('result_ring2 :', result_ring2)
 
 
 ######### 반지2 #########
-result, ring2_data = item2_data(result_ring1, result_ring2, ring1_data)
+ring2_data, possible_combin = item2_data(result_ring1, crawling_ring1, result_ring2, ring1_data, possible_combin, driver, item, cha, 4)
 
-if len(result) != 0:
-    ring2_list = []
-    x_path(result, ring2_list) # cha와 grade는 목걸이에서 썼던거 그대로 사용
+#save_csv('ring2', ring2_data)   # 파일로 저장
+print('반지2 크롤링 후 possible_combin :', len(possible_combin))
 
-    ring2_data_ = []
-    possible_combin = crawling(driver, ring2_list, item, cha, possible_combin, result_ring2, ring2_data_, 2)
-    ring2_data = ring2_data + sum(ring2_data_, [])
-
-save_csv('ring2', ring2_data)   # 파일로 저장
-
-print(possible_combin)
 
 # 33333   >>  26분 ~ 46분 (20분)
 # 333332  >>  (21분)
