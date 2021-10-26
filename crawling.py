@@ -182,7 +182,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1.2)
+                time.sleep(1)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
@@ -280,7 +280,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1.2)
+                time.sleep(1)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
@@ -348,7 +348,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1.2)
+                time.sleep(1)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
@@ -391,7 +391,7 @@ def main(driver, eff, item, cha):
                 item_list.append([name_list[i], effect_list[i], int(price_list[i].replace(',', ''))])
             elif price_list[i] == '-':
                 pass
-        
+
         return item_list
 
 
