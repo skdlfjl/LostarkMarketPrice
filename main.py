@@ -136,16 +136,16 @@ necklace_list = []
 x_path(result_necklace, necklace_list)
 cha = character_x_path(character)
 if len(ability) == 6:
-    # 레벨의 합이 16이고, 보물+각인서 합이 35이상 39이하인 경우 53, 63 (333331)
-    if sum(ability_lv) == 16 and 35 <= sum(item_act) <= 39:
-        #print('유물등급 + 고대등급 고려 >> 전체 : 1')
+    # 레벨의 합이 16이하, 보물+각인서 합이 35이상 39이하인 경우 53, 63 (333331 / 333321 ...)
+    if sum(ability_lv) <= 16 and 35 <= sum(item_act) <= 39:
+        print('유물등급 + 고대등급 고려 >> 전체 : 1')
         grade = 1
     # 레벨의 합이 17이고, 보물+각인서 합이 40이상인 경우 63 (333332)
     elif sum(ability_lv) == 17 and 40 <= sum(item_act):
-        #print('고대등급만 고려 >> 고대 : 8')
+        print('고대등급만 고려 >> 고대 : 8')
         grade = 8
 else:
-    #print('유물등급만 고려 >> 유물 : 7')
+    print('유물등급만 고려 >> 유물 : 7')
     grade = 7
 
 driver = cr.enter()   # 경매장 접속 + return값으로 driver 받기
@@ -259,7 +259,3 @@ ring2_data, possible_combin = item2_data(result_ring1, crawling_ring1, result_ri
 
 #save_csv('ring2', ring2_data)   # 파일로 저장
 print('반지2 크롤링 후 possible_combin :', len(possible_combin))
-
-
-# 33333   >>  26분 ~ 46분 (20분)
-# 333332  >>  (21분)
