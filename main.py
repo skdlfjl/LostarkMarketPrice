@@ -258,3 +258,151 @@ ring2_data, possible_combin = item2_data(result_ring1, crawling_ring1, result_ri
 
 #save_csv('ring2', ring2_data)   # 파일로 저장
 print('반지2 크롤링 후 possible_combin :', len(possible_combin))
+
+
+
+
+#### 결과내기!!! (최저가 장신구조합 뽑아내기) >> 조합 최적화 필요 / 최저가만 보여주지 말고 몇개 더 보여주기
+####--------------------------------------------------------------------------------------------------------------
+def item_list_(A, item_data):
+    item_list_ = []
+    for item in item_data:
+        try:
+            if item[1][A[0][0].replace(' ', '')] == A[0][1] and item[1][A[1][0].replace(' ', '')] == A[1][1]:
+                item_list_.append(item)
+        except:
+            pass
+    return item_list_
+
+def ddd(com, necklace_data, earring1_data, earring2_data, ring1_data, ring2_data):
+    N = effect_list(com[0])
+    necklace = item_list_(N, necklace_data)
+
+    E1 = effect_list(com[1])
+    earring1 = item_list_(E1, earring1_data)
+
+    E2 = effect_list(com[2])
+    earring2 = item_list_(E2, earring2_data)
+
+    R1 = effect_list(com[3])
+    ring1 = item_list_(R1, ring1_data)
+
+    R2 = effect_list(com[4])
+    ring2 = item_list_(R2, ring2_data)
+
+    return necklace, earring1, earring2, ring1, ring2
+
+def charact(c_dic, item_list_):
+    for i in item_list_:
+        if len(i[1]) == 5:
+            # 초기 c_dic = {'치명' : 0, '특화' : 0}
+            # 목걸이의 경우 특성을 2개 가지고있음
+            c_dic[character[0]] += i[1][character[0]]
+            c_dic[character[1]] += i[1][character[1]]
+
+        else:
+            try:
+                c_dic[character[0]] += i[1][character[0]]
+            except:
+                c_dic[character[1]] += i[1][character[1]]
+    
+    #print(c_dic)
+    if c_dic[character[0]] >= character_act[0] and c_dic[character[1]] >= character_act[1]:
+        return c_dic
+    else:
+        return 0
+
+
+def debuff_act(item):
+    if '공격속도감소' in item[1]:    
+        de_name = '공격속도감소'
+        debuff_act = item[1].get('공격속도감소')
+
+    elif '공격력감소' in item[1]:
+        de_name = '공격력감소'
+        debuff_act = item[1].get('공격력감소')
+
+    elif '이동속도감소' in item[1]:
+        de_name = '이동속도감소'
+        debuff_act = item[1].get('이동속도감소')
+
+    elif '방어력감소' in item[1]:
+        de_name = '방어력감소'
+        debuff_act = item[1].get('방어력감소')
+    
+    return de_name, debuff_act
+
+def debuff(N, E1, E2, R1, R2):
+    N_name, N_debuff = debuff_act(N)
+    E1_name, E1_debuff = debuff_act(E1)
+    E2_name, E2_debuff = debuff_act(E2)
+    R1_name, R1_debuff = debuff_act(R1)
+    R2_name, R2_debuff = debuff_act(R2)
+
+    d_dic = {'공격속도감소' : 0, '공격력감소' : 0, '이동속도감소' : 0, '방어력감소' : 0}
+    d_dic[N_name] += N_debuff
+    d_dic[E1_name] += E1_debuff
+    d_dic[E2_name] += E2_debuff
+    d_dic[R1_name] += R1_debuff
+    d_dic[R2_name] += R2_debuff
+
+    if d_dic['공격속도감소'] < 5 and d_dic['공격력감소'] < 5 and d_dic['이동속도감소'] < 5 and d_dic['방어력감소'] < 5:
+        return d_dic
+    else:
+        return 0
+
+#--------------------------
+
+price_list = []
+dic_list = []
+character_act = [450, 1400]    # 원하는 특성값 
+
+for com in possible_combin:
+    necklace, earring1, earring2, ring1, ring2 = ddd(com, necklace_data, earring1_data, earring2_data, ring1_data, ring2_data)
+    for N in necklace:
+        for E1 in earring1:
+            for E2 in earring2:
+                # 중복되는 이름의 장비 제외
+                if E1[0] == E2[0]:
+                    continue
+                for R1 in ring1:
+                    for R2 in ring2: 
+                        # 중복되는 이름의 장비 제외
+                        if R1[0] == R2[0]:
+                            continue
+
+                        # 특성값의 합이 목표보다 낮은경우 제외
+                        c_dic = {}
+                        c_dic[character[0]] = 0
+                        c_dic[character[1]] = 0
+                        c_dic = charact(c_dic, [N, E1, E2, R1, R2])
+                        if c_dic == 0:
+                            continue
+
+                        # 디버프 레벨이 올라가는경우 제외
+                        d_dic = debuff(N, E1, E2, R1, R2)
+                        if d_dic == 0:
+                            continue
+
+                        price = N[2]+E1[2]+E2[2]+R1[2]+R2[2]
+                        price_list.append(price)
+                        item = [N, E1, E2, R1, R2, d_dic, c_dic, price]
+                        dic_list.append(item)
+
+
+print('최고가 :', max(price_list))
+print('최저가 :', min(price_list))
+
+import numpy as np
+min_index = np.where(np.array(price_list) == min(price_list))[0]
+#print('min_index :', min_index, '\n')
+
+for i in min_index:
+    item_list = dic_list[i]
+    print('\n')
+    print('necklace :', item_list[0])
+    print('earring1 :', item_list[1])
+    print('earring2 :', item_list[2])
+    print('ring1 :', item_list[3])
+    print('ring2 :', item_list[4])
+    print('debuff :', item_list[5], '\ncharacter :', item_list[6], '\nprice :', item_list[7])
