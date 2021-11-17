@@ -182,7 +182,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1)
+                time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
@@ -280,7 +280,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1)
+                time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
@@ -325,7 +325,7 @@ def main(driver, eff, item, cha):
         driver.find_element_by_xpath(detail_option_x_path).send_keys(Keys.ENTER)
 
         # 두번째 특성 cha[1] 선택
-        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]' 
+        option3Sub_x_path = '//*[@id="selEtcSub_2"]/div[1]'
         driver.find_element_by_xpath(option3Sub_x_path).send_keys(Keys.ENTER)  # 옵션 선택 클릭
         driver.find_element_by_xpath('//*[@id="selEtcSub_2"]/div[2]/label[{}]'.format(cha[1])).click()  # 3 (특화) 특성 선택
         
@@ -348,7 +348,7 @@ def main(driver, eff, item, cha):
             next_page = 3
             for next in range(next_page, next_page + last_page):
                 #print('>>', next-2, '페이지 데이터 입니다.')
-                time.sleep(1)
+                time.sleep(1.2)
                 html = driver.page_source # 페이지의 elements모두 가져오기
                 soup = BeautifulSoup(html, 'html.parser') # BeautifulSoup사용하기
                 name = soup.select('span.name')
