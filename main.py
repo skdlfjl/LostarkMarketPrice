@@ -122,7 +122,6 @@ def save_csv(name, item_data):
 # 목걸이의 유니크 조합만 저장해둔 result_necklace
 # 나올 수 있는 가능한 모든 조합을 저장해둔 possible_combin
 result_necklace, possible_combin = com.main(ability, ability_lv, item_act)
-print('possible_combin :', len(possible_combin))
 
 
 ######### 목걸이 #########

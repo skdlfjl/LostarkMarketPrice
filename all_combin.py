@@ -155,6 +155,7 @@ def main(ability, ability_lv, item_act):
 
         # 우선 목걸이의 유니크 조합 구하기 >> 크롤링 할 것 뽑아내기
         result_necklace = list(set(necklace))
+        print('possible_combin :', len(possible_combin))
         print('result_necklace :', result_necklace)
         return result_necklace, possible_combin
 
