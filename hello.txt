@@ -1,4 +1,0 @@
-LostarkMarketPrice tast2
-
-마스터브랜치 push 테스트 파일입니다.
-프로젝트가 완료되면 삭제됩니다.
