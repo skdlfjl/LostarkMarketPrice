@@ -118,7 +118,7 @@ def main(ability, ability_lv, item_act):
         #shuffle_index = list(permutations(all_combi_index, 4)) # 인덱스를 섞어준다
         # 기존 코드
 
-        print('all_combi :', all_combi)
+        #print('all_combi :', all_combi)
         s = list(combinations_with_replacement(all_combi_index, 2))
         shuffle_index = []
         for i in s:
