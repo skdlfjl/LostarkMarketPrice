@@ -12,9 +12,10 @@ import dict_x_path as dic
 # 각인 6개 (고대등급 O) input data
 ability = ['기습의 대가', '잔재된 기운', '원한', '슈퍼 차지', '예리한 둔기', '아드레날린']
 ability_lv = [3, 3, 3, 3, 3, 2]
+#item_act = [12, 12, 10, 0, 0, 7] 
 item_act = [12, 12, 9, 0, 0, 7]    
 character = ['치명', '특화']    # [특성1, 특성2] 
-character_act = [450, 1400]    # 원하는 특성값 
+character_act = [450, 1450]    # 원하는 특성값 
 #-----------------------------------------------------------------------------------------
 ### input data ###  >>> 예시입니당
 # 각인 5개 (고대등급 X) input data
@@ -25,6 +26,8 @@ item_act = [7, 7, 12, 9, 0]    # 33333
 character = ['치명', '특화']    # [특성1, 특성2] 
 character_act = [1500, 500]    # 원하는 특성값 '''
 #-----------------------------------------------------------------------------------------
+ability_lv_act = [i*5 for i in ability_lv]    # 입력받은 레벨에 *5 한 값을 저장한다
+
 
 def tuple_index(tu, list_):
     eff_list = []
@@ -134,17 +137,17 @@ necklace_list = []
 x_path(result_necklace, necklace_list)
 cha = character_x_path(character)
 if len(ability) == 6:
-    # 레벨의 합이 16이하, 보물+각인서 합이 35이상 39이하인 경우 53, 63 (333331 / 333321 ...)
-    if sum(ability_lv) <= 16 and 35 <= sum(item_act) <= 39:
-        print('유물등급 + 고대등급 고려 >> 전체 : 1')
-        grade = 1
-    # 레벨의 합이 17이고, 보물+각인서 합이 40이상인 경우 63 (333332)
-    elif sum(ability_lv) == 17 and 40 <= sum(item_act):
-        print('고대등급만 고려 >> 고대 : 8')
-        grade = 8
+    # 사용자가 입력한 돌+각인서 활성도 값 합이 [ 필요 활성도 합 - (6+3)*5 ] 와 같을 경우
+    # 63 고대 장신구로만 조합이 나오도록! (63 장신구로만 조합해야 가능하기때문)  
+    if len(ability) == 6 and sum(item_act) == sum(ability_lv_act) - (6+3)*5:
+        print('고대 장신구')
+        grade = 8 # 고대 : 8
+    else:
+        print('유물 장신구 + 고대 장신구')
+        grade = 1 # 전체 : 1
 else:
-    print('유물등급만 고려 >> 유물 : 7')
-    grade = 7
+    print('유물 장신구')
+    grade = 7 # 유물 : 7
 
 driver = cr.enter()   # 경매장 접속 + return값으로 driver 받기
 cr.item_select(driver, item, grade, cha)  # 상세옵션에서 목걸이 + 장신구 등급 + 특성 선택 
@@ -354,7 +357,7 @@ def debuff(N, E1, E2, R1, R2):
 
 price_list = []
 dic_list = []
-character_act = [450, 1400]    # 원하는 특성값 
+character_act = [450, 1400]    # 원하는 특성값
 
 for com in possible_combin:
     necklace, earring1, earring2, ring1, ring2 = ddd(com, necklace_data, earring1_data, earring2_data, ring1_data, ring2_data)
