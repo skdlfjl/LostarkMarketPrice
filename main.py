@@ -2,6 +2,7 @@ import dict_x_path as dic
 import crawling as cr
 import time
 import csv 
+import numpy as np
 
 import all_combin as com
 import crawling as cr
@@ -357,7 +358,7 @@ def debuff(N, E1, E2, R1, R2):
 
 price_list = []
 dic_list = []
-character_act = [450, 1400]    # 원하는 특성값
+#character_act = [450, 1400]    # 원하는 특성값
 
 for com in possible_combin:
     necklace, earring1, earring2, ring1, ring2 = ddd(com, necklace_data, earring1_data, earring2_data, ring1_data, ring2_data)
@@ -395,16 +396,26 @@ for com in possible_combin:
 print('최고가 :', max(price_list))
 print('최저가 :', min(price_list))
 
-import numpy as np
-min_index = np.where(np.array(price_list) == min(price_list))[0]
-#print('min_index :', min_index, '\n')
+num = 0
+price_list_ = price_list[:] 
+pop_price_list = price_list[:] 
 
-for i in min_index:
-    item_list = dic_list[i]
-    print('\n')
-    print('necklace :', item_list[0])
-    print('earring1 :', item_list[1])
-    print('earring2 :', item_list[2])
-    print('ring1 :', item_list[3])
-    print('ring2 :', item_list[4])
-    print('debuff :', item_list[5], '\ncharacter :', item_list[6], '\nprice :', item_list[7])
+while num < 10:
+    min_price = pop_price_list.pop(pop_price_list.index(min(pop_price_list)))
+    #print(min_price)
+
+    min_index = np.where(np.array(price_list_) == min(price_list_))[0]
+    min_index = np.where(np.array(price_list_) == min_price)[0]
+    #print('min_index :', min_index)
+
+    for i in min_index:
+        item_list = dic_list[i]
+        print('\n')
+        print('necklace :', item_list[0])
+        print('earring1 :', item_list[1])
+        print('earring2 :', item_list[2])
+        print('ring1 :', item_list[3])
+        print('ring2 :', item_list[4])
+        print('debuff :', item_list[5], '\ncharacter :', item_list[6], '\nprice :', item_list[7])
+        
+    num += 1
